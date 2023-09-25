@@ -1,0 +1,49 @@
+import profesionales.*
+import empresaDeServicios.*
+import solicitantes.*
+
+describe"Test de Empresa"{
+//declaracion objetos
+	//Universidades
+	const sanMartin = new Universidad(provincia = "Buenos Aires", honorariosRecomendados = 3500)
+	const rosario = new Universidad(provincia = "Santa Fe", honorariosRecomendados = 2800)
+	const corrientes = new Universidad(provincia = "Corrientes", honorariosRecomendados = 4200)
+	const unahur = new Universidad(provincia = "Buenos Aires", honorariosRecomendados = 8800)
+	//Profesionales
+	const juana = new ProfesionalVinculado(universidad = rosario)
+	const melina = new ProfesionalAsociado(universidad = corrientes)
+	const rocio = new ProfesionalLibre(universidad = unahur, honorariosPorHora = 5000, provinciasDondePuedeTrabajar = #{"Santa Fe", "Cordoba", "Buenos Aires"})
+	const luciana = new ProfesionalLibre(universidad = rosario, honorariosPorHora = 3200, provinciasDondePuedeTrabajar = #{"Santa Fe", "Entre Rios"})
+	//Empresa
+	const empresa = new EmpresaDeServicios(honorarioDeReferencia = 3500, profesionalesContratados = #{juana, melina, rocio, luciana})
+	
+// Tests
+	test "en unahur estudio solo 1 profesional"{
+		assert.equals(1, empresa.cuantosEstudiaronEn(unahur))
+	}
+	test "en la uni de Rosario estudiaron solo 2 profesionales"{
+		assert.equals(2, empresa.cuantosEstudiaronEn(rosario))
+	}
+	test "ningun profesional estudio en la uni de San Martin"{
+		assert.equals(0, empresa.cuantosEstudiaronEn(sanMartin))
+	}
+	test "Como profesional caro solo a Rocio"{
+		assert.that(empresa.profesionalesCaros() == #{rocio})
+	}
+	test "Universidades formadoradas son rosario, corrientes, y unahur"{
+		assert.that(empresa.universidadesFormadoras() == #{rosario, corrientes, unahur})
+	}
+	test "El profesional mas barato contratado es juana "{
+		assert.that(empresa.profesionalMasBarato() == juana)
+	}
+	test "Es verdad que la empresa es de gente acotada"{
+		assert.that(empresa.esDeGenteAcotada())
+	}
+	test "agregamos a luciana 2 provincias y la empresa ya no sera de gente acotada"{
+		luciana.provinciasDondePuedeTrabajar("Corrientes")
+		luciana.provinciasDondePuedeTrabajar("Misiones")
+		assert.notThat(empresa.esDeGenteAcotada())
+	}
+	
+}
+	     
